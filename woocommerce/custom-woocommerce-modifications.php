@@ -130,10 +130,9 @@ if ($product->is_type('variable')) {
     $max_price = max($variation_prices);
 
     // Выводим максимальную цену
-    echo '<p class="product-price">' . wc_price($max_price) . '</p>';
+    echo '<p class="product-price" id="variable-price">' . wc_price($max_price) . '</p>';
 
-    // Вставляем блок с ценой вариации в конец контейнера с ценой товара
-    echo '<div class="woocommerce-variation-price" style="display:none;"><span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>' . wc_price($max_price) . '&nbsp;<span class="woocommerce-Price-currencySymbol">₽</span></bdi></span></del> <ins><span class="woocommerce-Price-amount amount"><bdi>' . wc_price($max_price) . '&nbsp;<span class="woocommerce-Price-currencySymbol">₽</span></bdi></span></ins></span></div>';
+   
 } else {
     // Если товар не вариативный, выводим цену со скидкой, если она есть, или обычную цену
     $regular_price = $product->get_regular_price();

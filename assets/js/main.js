@@ -186,16 +186,60 @@ function getProductTitleFromURL(url) {
 function generateLink(baseURL, productName, variationValue) {
     return baseURL + '/' + productName.toLowerCase().replace(/ /g, '-') + '/?attribute_pa_color=' + variationValue;
 }
+
+
 jQuery(document).ready(function($) {
+  function updatePrice() {
+    // Получаем цену активной вариации
+    var variation_price = $('.woocommerce-variation-price .price ins').html() || $('.woocommerce-variation-price .price').html();
+
+    // Проверяем, что цена доступна
+    if (variation_price.trim() !== "") {
+      // Обновляем основную цену товара
+      $('.product-price .woocommerce-Price-amount bdi').html(variation_price);
+    }
+  }
+
   // Слушаем изменения вариаций
   $('.variations select').change(function() {
-      // Получаем выбранное значение вариации
-      var selected_option = $(this).val();
+    // Устанавливаем задержку в 50 миллисекунд перед обновлением цены
+    setTimeout(updatePrice, 50);
+  });
 
-      // Находим соответствующий блок с ценой вариации
-      var variation_price = $('.woocommerce-variation-price[data-value="' + selected_option + '"]').html();
+  // Вызываем функцию обновления цены при загрузке страницы
+  updatePrice();
+});
 
-      // Обновляем блок с ценой товара
-      $('.product-price').html(variation_price);
+
+
+
+jQuery(document).ready(function($) {
+  function updateDiscount() {
+      // Получаем все вариации товара
+      var variations = $('.woocommerce-variation');
+
+      // Проходимся по каждой вариации
+      variations.each(function() {
+          var variation = $(this);
+          var priceElement = variation.find('.woocommerce-variation-price .price');
+
+          // Проверяем, есть ли скидка на данную вариацию
+          if (variation.find('.discount-percentage').length > 0) {
+              // Если есть, показываем скидку
+              priceElement.prepend('<div class="discount-percentage">' + variation.find('.discount-percentage').text() + '</div>');
+          } else {
+              // Если скидки нет, удаляем существующую скидку (если она была)
+              variation.find('.discount-percentage').remove();
+          }
+      });
+  }
+
+  // Вызываем функцию обновления скидки при загрузке страницы
+  updateDiscount();
+
+  // Слушаем изменения вариаций
+  $('.variations select').change(function() {
+      // Вызываем функцию обновления скидки при выборе вариации
+      updateDiscount();
   });
 });
